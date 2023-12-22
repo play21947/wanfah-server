@@ -127,6 +127,12 @@ setInterval(async () => {
 
 // GroupId : C50d6008e31f79c1b01d67ec9d7152b14
 
+
+app.get("/test", (req, res)=>{
+    console.log("test")
+    res.json("Testing")
+})
+
 app.post("/webhook", (req, res) => {
     if (req.body.events && req.body.events.length > 0) {
         console.log(req.body.events)
