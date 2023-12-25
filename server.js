@@ -7,6 +7,7 @@ import process from 'process'
 import chalk from 'chalk'
 import axios from 'axios'
 import dotenv from 'dotenv'
+import mysql from 'mysql2'
 
 let env = dotenv.config().parsed
 
@@ -33,6 +34,10 @@ const CheckMemoryUsage = () => {
 
 Welcome()
 CheckMemoryUsage()
+
+// const db = mysql.createConnection({
+//     host: 'localhost'
+// })
 
 // console.log(Object.entries(process.memoryUsage()))
 
@@ -145,7 +150,8 @@ app.post("/webhook", (req, res) => {
 
 
 app.post("/notify", async (req, res) => {
-    let { name, lastName, numberPhone, total, slip_img, cart, donate, way } = req.body
+    let maintenance = 5
+    let { name, lastName, numberPhone, total, slip_img, cart, way } = req.body
     let cartJson = JSON.parse(cart)
     let combine_array_lottery = ''
     let totalQuantity
@@ -175,7 +181,7 @@ app.post("/notify", async (req, res) => {
         messages: [
             {
                 type: 'text',
-                text: `คุณ ${name} ${lastName} \nเบอร์โทร : ${numberPhone} \n ช่องทางการสั่งซื้อ : ${way == 'ems' ? 'ส่ง EMS +50 บาท' : 'ปกติ'} \nยอดสั่งซื้อในระบบ : ${way == 'ems' ? (total + (totalQuantity * donate)) + 50 : (total + (totalQuantity * donate))} บาท \nหวยที่ซื้อ : ${CartTextShow} \nจำนวน : ${totalQuantity} ใบ \nเงินที่บริจาค : ${donate} บาท`
+                text: `คุณ ${name} ${lastName} \nเบอร์โทร : ${numberPhone} \n ช่องทาง : ${way == 'ems' ? 'ส่ง EMS +50 บาท' : 'ปกติ'} \nยอด : ${way == 'ems' ? (total + (totalQuantity * maintenance)) + 50 : (total + (totalQuantity * maintenance))} บาท \nหวยที่ซื้อ : ${CartTextShow} \nจำนวน : ${totalQuantity} ใบ`
             },
             {
                 type: 'image',
