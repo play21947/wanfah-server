@@ -7,7 +7,7 @@ import process from 'process'
 import chalk from 'chalk'
 import axios from 'axios'
 import dotenv from 'dotenv'
-import mysql from 'mysql2'
+// import mysql from 'mysql2'
 
 let env = dotenv.config().parsed
 
