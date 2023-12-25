@@ -216,6 +216,16 @@ app.get("/unlockLotteryAll", async (req, res) => {
     console.log(chalk.green("Unlock All Lottery Successfully!"))
 })
 
+app.get('/api/getLotteryResult', async(req, res)=>{
+
+    let data = await axios.post('https://www.glo.or.th/api/lottery/getLatestLottery').then((res)=>{
+        return res.data
+    })
+
+
+    res.json({status: 200, data: data})
+})
+
 
 
 app.listen(3001, () => {
