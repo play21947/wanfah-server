@@ -45,51 +45,53 @@ CheckMemoryUsage()
 
 // Delete Orders When orders expires
 
-setInterval(async () => {
-    let current_time = new Date().getTime()
+// Burn My firestore
 
-    let orders_data = await getDocs(collection(db, 'orders')).then((res) => {
-        let data = res.docs.map((item) => {
+// setInterval(async () => {
+//     let current_time = new Date().getTime()
 
-            return {
-                ...item.data(),
-                orderId: item.id
-            }
-        })
+//     let orders_data = await getDocs(collection(db, 'orders')).then((res) => {
+//         let data = res.docs.map((item) => {
 
-        return data
-    })
+//             return {
+//                 ...item.data(),
+//                 orderId: item.id
+//             }
+//         })
 
-    orders_data.map((item) => {
-        let diffTime = item.timestampEnd - current_time
+//         return data
+//     })
 
-        if (diffTime <= 0 && !item.payment_success) {
-            deleteDoc(doc(db, "orders", item.orderId)).then((res) => {
-                console.log("Deleted Timeout Orders Sucessfully")
-                // Return Lottery Can Buy to shop
+//     orders_data.map((item) => {
+//         let diffTime = item.timestampEnd - current_time
 
-                updateDoc(doc(db, 'users', item.userId), {
-                    orderId: ''
-                }).then(() => {
-                    console.log("OrderId Delete in user")
+//         if (diffTime <= 0 && !item.payment_success) {
+//             deleteDoc(doc(db, "orders", item.orderId)).then((res) => {
+//                 console.log("Deleted Timeout Orders Sucessfully")
+//                 // Return Lottery Can Buy to shop
 
-                    if (item.cart && item.cart.length > 0) {
-                        item.cart.map((itemCart) => {
-                            updateDoc(doc(db, "lottery", itemCart.lotteryId), {
-                                lock: false
-                            }).then(() => {
-                                console.log(chalk.green(`${itemCart.lotteryId} can buy`))
-                            })
-                        })
-                    } else {
-                        console.error("No item in cart")
-                    }
-                })
+//                 updateDoc(doc(db, 'users', item.userId), {
+//                     orderId: ''
+//                 }).then(() => {
+//                     console.log("OrderId Delete in user")
 
-            })
-        }
-    })
-}, 1000)
+//                     if (item.cart && item.cart.length > 0) {
+//                         item.cart.map((itemCart) => {
+//                             updateDoc(doc(db, "lottery", itemCart.lotteryId), {
+//                                 lock: false
+//                             }).then(() => {
+//                                 console.log(chalk.green(`${itemCart.lotteryId} can buy`))
+//                             })
+//                         })
+//                     } else {
+//                         console.error("No item in cart")
+//                     }
+//                 })
+
+//             })
+//         }
+//     })
+// }, 1000)
 
 
 
