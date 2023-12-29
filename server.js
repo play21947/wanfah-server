@@ -1,4 +1,4 @@
-import express from 'express'
+import express, { json } from 'express'
 import cors from 'cors'
 const app = express()
 import { db } from './config.js'
@@ -135,7 +135,7 @@ CheckMemoryUsage()
 // GroupId : C50d6008e31f79c1b01d67ec9d7152b14
 
 
-app.get("/test", (req, res)=>{
+app.get("/test", (req, res) => {
     console.log("test")
     res.json("Testing")
 })
@@ -218,14 +218,61 @@ app.get("/unlockLotteryAll", async (req, res) => {
     console.log(chalk.green("Unlock All Lottery Successfully!"))
 })
 
-app.get('/api/getLotteryResult', async(req, res)=>{
+app.get('/api/getLotteryResult', async (req, res) => {
 
-    let data = await axios.post('https://www.glo.or.th/api/lottery/getLatestLottery').then((res)=>{
+    let data = await axios.post('https://www.glo.or.th/api/lottery/getLatestLottery').then((res) => {
         return res.data
     })
 
 
-    res.json({status: 200, data: data})
+    res.json({ status: 200, data: data })
+})
+
+
+app.post('/api/winLottery', async (req, res) => {
+    let { name, lastName, amountWin, lotteryWin, numberPhone, userId } = req.body
+    let totalQuantity
+    let arrayLotteryWin = []
+
+    let convertLottery = JSON.parse(lotteryWin)
+
+    let textWin = ''
+
+    console.log(Number(amountWin).toLocaleString('th-TH'))
+
+    await convertLottery.map((item) => {
+        textWin = textWin + item.userNumber + ','
+        arrayLotteryWin.push(item.userNumber)
+    })
+
+    totalQuantity = convertLottery.reduce((total, current) => {
+        return total = total + current.quantity
+    }, 0)
+
+
+
+    await axios.post("https://api.line.me/v2/bot/message/push", {
+        to: 'C50d6008e31f79c1b01d67ec9d7152b14',
+        messages: [
+            {
+                type: 'text',
+                text: `ถูกรางวัล!!🥳 ${Number(amountWin).toLocaleString('th-TH')} บาท \nคุณ ${name} ${lastName} \nเบอร์โทร : ${numberPhone} \nหวยที่ถูก : ${textWin} \nจำนวน : ${totalQuantity} ใบ`
+            },
+        ]
+    }, {
+        headers: {
+            'Authorization': `Bearer ${env.ACCESS_TOKEN}`
+        }
+    }).then((res) => {
+        updateDoc(doc(db, 'users', userId), {
+            win_lottery: arrayLotteryWin,
+            amountWin: amountWin,
+            transaction: false
+        })
+    })
+
+
+    res.json({ status: 200 })
 })
 
 
