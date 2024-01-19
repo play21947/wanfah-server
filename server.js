@@ -2,7 +2,7 @@ import express, { json } from 'express'
 import cors from 'cors'
 const app = express()
 import { db } from './config.js'
-import { getDocs, collection, deleteDoc, doc, getDoc, where, query, updateDoc } from 'firebase/firestore'
+import { getDocs, collection, deleteDoc, doc, getDoc, where, query, updateDoc, addDoc } from 'firebase/firestore'
 import process from 'process'
 import chalk from 'chalk'
 import axios from 'axios'
@@ -152,15 +152,15 @@ app.post("/webhook", (req, res) => {
 
 
 app.post("/notify", async (req, res) => {
-    let maintenance = 5
+    let maintenance = 20
     let { name, lastName, numberPhone, total, slip_img, cart, way } = req.body
     let cartJson = JSON.parse(cart)
     let combine_array_lottery = ''
-    let totalQuantity
+    let totalQuantity = 0
 
     if (cartJson && cartJson.length > 0) {
-        totalQuantity = cartJson.reduce((total, current) => {
-            return total = total + current.quantity
+        totalQuantity = cartJson.reduce((total_quantity, current) => {
+            return total_quantity = total_quantity + current.quantity
         }, 0)
     }
 
@@ -275,19 +275,46 @@ app.post('/api/winLottery', async (req, res) => {
     res.json({ status: 200 })
 })
 
+app.post("/api/points_to_money", async (req, res) => {
 
-app.get("/api/win_lists", async (req, res) => {
+    let { userProfile, amount } = req.body
+
+    let response = await axios.post("https://api.line.me/v2/bot/message/push", {
+        to: 'C50d6008e31f79c1b01d67ec9d7152b14',
+        messages: [
+            {
+                type: 'text',
+                text: `ต้องการแลกพอยต์เป็นเงินจำนวน ${amount} บาท \nคุณ : ${userProfile.name} ${userProfile.lastName} \nเบอร์โทร : ${userProfile.numberPhone} \nธนาคาร :${userProfile.banking_name ? userProfile.banking_name.name : 'ไม่มี'} \nเลขบัญชีธนาคาร :${userProfile.banking_number ? userProfile.banking_number : 'ไม่มี'}`
+            },
+        ]
+    }, {
+        headers: {
+            'Authorization': `Bearer ${env.ACCESS_TOKEN}`
+        }
+    })
+
+    if (response.data) {
+        res.json({ status: 200 })
+    }
+
+
+})
+
+app.get("/api/store_history", async (req, res) => {
 
     let sortLotteryReward = []
     let arrayUserLottery = []
 
+    let combineResultWin = []
 
-    let lottery_result = await axios.get('https://wanfah-server-production.up.railway.app/api/getLotteryResult').then((res) => {
+
+    let lottery_result = await axios.post('https://www.glo.or.th/api/lottery/getLatestLottery').then((res) => {
         return res.data
     })
 
-    let reward = Object.entries(lottery_result.data.response.data)
-    let data = Object.entries(lottery_result.data.response.data)
+
+    let reward = Object.entries(lottery_result.response.data)
+    let data = Object.entries(lottery_result.response.data)
 
     // arrayLottery = lottery_result.data.response.data
 
@@ -310,7 +337,7 @@ app.get("/api/win_lists", async (req, res) => {
 
     order.map((item) => {
         item.cart.map((items) => {
-            arrayUserLottery.push(items)
+            arrayUserLottery.push({ ...items, userId: item.userId, name: item.name, orderId: item.orderId })
         })
     })
 
@@ -326,6 +353,9 @@ app.get("/api/win_lists", async (req, res) => {
         let payload = {
             ...data.shift(),
             userNumber: item.number,
+            userId: item.userId,
+            name: item.name,
+            date: lottery_result.response.date,
             quantity: item.quantity //ซื้อหวยกี่ใบต่อ 1 order
         }
 
@@ -340,6 +370,9 @@ app.get("/api/win_lists", async (req, res) => {
 
         if (item.reward == "first") {
             if (item.userNumber == item.value) {
+
+                item.text = 'ถูกรางวัลที่ 1'
+
                 let payload = {
                     ...item,
                     text: 'ถูกรางวัลที่ 1'
@@ -351,6 +384,9 @@ app.get("/api/win_lists", async (req, res) => {
 
         if (item.reward == "second") {
             if (item.userNumber == item.value) {
+
+                item.text = 'ถูกรางวัลที่ 2'
+
                 let payload = {
                     ...item,
                     text: 'ถูกรางวัลที่ 2'
@@ -362,6 +398,9 @@ app.get("/api/win_lists", async (req, res) => {
 
         if (item.reward == 'third') {
             if (item.userNumber == item.value) {
+
+                item.text = 'ถูกรางวัลที่ 3'
+
                 let payload = {
                     ...item,
                     text: 'ถูกรางวัลที่ 3'
@@ -373,6 +412,9 @@ app.get("/api/win_lists", async (req, res) => {
 
         if (item.reward == 'fourth') {
             if (item.userNumber == item.value) {
+
+                item.text = 'ถูกรางวัลที่ 4'
+
                 let payload = {
                     ...item,
                     text: 'ถูกรางวัลที่ 4'
@@ -384,6 +426,9 @@ app.get("/api/win_lists", async (req, res) => {
 
         if (item.reward == 'fifth') {
             if (item.userNumber == item.value) {
+
+                item.text = 'ถูกรางวัลที่ 5'
+
                 let payload = {
                     ...item,
                     text: 'ถูกรางวัลที่ 5'
@@ -404,6 +449,8 @@ app.get("/api/win_lists", async (req, res) => {
 
             if (combine == item.value) {
 
+                item.text = 'ถูกรางวัล 2 ตัวท้าย'
+
                 let payload = {
                     ...item,
                     text: 'ถูกรางวัล 2 ตัวท้าย'
@@ -423,6 +470,9 @@ app.get("/api/win_lists", async (req, res) => {
 
 
             if (combine == item.value) {
+
+                item.text = 'ถูกรางวัลเลขหน้า 3 ตัว'
+
                 let payload = {
                     ...item,
                     text: 'ถูกรางวัลเลขหน้า 3 ตัว'
@@ -444,6 +494,8 @@ app.get("/api/win_lists", async (req, res) => {
 
             if (combine == item.value) {
 
+                item.text = 'ถูกรางวัลเลขท้าย 3 ตัว'
+
                 let payload = {
                     ...item,
                     text: 'ถูกรางวัลเลขท้าย 3 ตัว'
@@ -458,6 +510,8 @@ app.get("/api/win_lists", async (req, res) => {
         if (item.reward == 'near1') {
             if (item.userNumber == item.value) {
 
+                item.text = 'ถูกรางวัลใกล้เคียงรางวัลที่ 1'
+
                 let payload = {
                     ...item,
                     text: 'ถูกรางวัลใกล้เคียงรางวัลที่ 1'
@@ -468,32 +522,267 @@ app.get("/api/win_lists", async (req, res) => {
             }
         }
 
+
+    })
+
+    find.map((item, index) => {
+
+        addDoc(collection(db, 'history'), item).then((res) => {
+            console.log(`${item.name} ${item.userNumber} saved to history`)
+        })
+
+        if (index == (find.length - 1)) {
+            console.log("Successfully")
+            res.send({ status: 200 })
+        }
     })
 })
 
-app.post("/api/points_to_money", async (req, res) => {
+app.get("/api/check_users_win", async (req, res) => {
 
-    let {userProfile, amount} = req.body
+    let sortLotteryReward = []
+    let arrayUserLottery = []
 
-    let response = await axios.post("https://api.line.me/v2/bot/message/push", {
-        to: 'C50d6008e31f79c1b01d67ec9d7152b14',
-        messages: [
-            {
-                type: 'text',
-                text: `ต้องการแลกพอยต์เป็นเงินจำนวน ${amount} บาท \nคุณ : ${userProfile.name} ${userProfile.lastName} \nเบอร์โทร : ${userProfile.numberPhone} \nธนาคาร :${userProfile.banking_name ? userProfile.banking_name.name : 'ไม่มี'} \nเลขบัญชีธนาคาร :${userProfile.banking_number ? userProfile.banking_number : 'ไม่มี'}`
-            },
-        ]
-    }, {
-        headers: {
-            'Authorization': `Bearer ${env.ACCESS_TOKEN}`
-        }
+    let combineResultWin = []
+
+
+    let lottery_result = await axios.post('https://www.glo.or.th/api/lottery/getLatestLottery').then((res) => {
+        return res.data
     })
 
-    if(response.data){
-        res.json({status: 200})
+
+    let reward = Object.entries(lottery_result.response.data)
+    let data = Object.entries(lottery_result.response.data)
+
+    // arrayLottery = lottery_result.data.response.data
+
+    reward.map((item) => {
+        item[1].number.map((items) => {
+            sortLotteryReward.push({ ...items, reward: item[0], price: item[1].price })
+        })
+    })
+
+    let order = await getDocs(query(collection(db, 'orders'))).then((res) => {
+        let payload = res.docs.map((item) => {
+            return {
+                ...item.data(),
+                orderId: item.id
+            }
+        })
+
+        return payload
+    })
+
+    order.map((item) => {
+        item.cart.map((items) => {
+            arrayUserLottery.push({ ...items, userId: item.userId, name: item.name, orderId: item.orderId, numberPhone: item.numberPhone })
+        })
+    })
+
+
+    let find = arrayUserLottery.map((item) => {
+
+        // console.log("User Cart : ", item)
+
+        let data = sortLotteryReward.filter((itemGov) => {
+            return item.number.includes(itemGov.value)
+        })
+
+        let payload = {
+            ...data.shift(),
+            userNumber: item.number,
+            userId: item.userId,
+            name: item.name,
+            numberPhone: item.numberPhone,
+            date: lottery_result.response.date,
+            quantity: item.quantity //ซื้อหวยกี่ใบต่อ 1 order
+        }
+
+        return payload
+    })
+
+    // console.log("Find Something : ", find)
+
+
+
+    find.map((item) => {
+
+        if (item.reward == "first") {
+            if (item.userNumber == item.value) {
+
+                item.text = 'ถูกรางวัลที่ 1'
+
+                let payload = {
+                    ...item,
+                    text: 'ถูกรางวัลที่ 1'
+                }
+                console.log('ถูกรางวัลที่ 1', item.userNumber)
+                combineResultWin.push(payload)
+            }
+        }
+
+        if (item.reward == "second") {
+            if (item.userNumber == item.value) {
+
+                item.text = 'ถูกรางวัลที่ 2'
+
+                let payload = {
+                    ...item,
+                    text: 'ถูกรางวัลที่ 2'
+                }
+                console.log('ถูกรางวัลที่ 2', item.userNumber)
+                combineResultWin.push(payload)
+            }
+        }
+
+        if (item.reward == 'third') {
+            if (item.userNumber == item.value) {
+
+                item.text = 'ถูกรางวัลที่ 3'
+
+                let payload = {
+                    ...item,
+                    text: 'ถูกรางวัลที่ 3'
+                }
+                console.log('ถูกรางวัลที่ 3', item.userNumber)
+                combineResultWin.push(payload)
+            }
+        }
+
+        if (item.reward == 'fourth') {
+            if (item.userNumber == item.value) {
+
+                item.text = 'ถูกรางวัลที่ 4'
+
+                let payload = {
+                    ...item,
+                    text: 'ถูกรางวัลที่ 4'
+                }
+                console.log('ถูกรางวัลที่ 4', item.userNumber)
+                combineResultWin.push(payload)
+            }
+        }
+
+        if (item.reward == 'fifth') {
+            if (item.userNumber == item.value) {
+
+                item.text = 'ถูกรางวัลที่ 5'
+
+                let payload = {
+                    ...item,
+                    text: 'ถูกรางวัลที่ 5'
+                }
+                console.log('ถูกรางวัลที่ 5', item.userNumber)
+                combineResultWin.push(payload)
+            }
+        }
+
+        if (item.reward == 'last2') {
+
+            let userNum1 = item.userNumber[4]
+            let userNum2 = item.userNumber[5]
+            let valueNum1 = item.value[0]
+            let valueNum2 = item.value[1]
+
+            let combine = userNum1.toString() + userNum2.toString()
+
+            if (combine == item.value) {
+
+                item.text = 'ถูกรางวัล 2 ตัวท้าย'
+
+                let payload = {
+                    ...item,
+                    text: 'ถูกรางวัล 2 ตัวท้าย'
+                }
+
+                console.log('ถูกรางวัล 2 ตัวท้าย', item.userNumber)
+                combineResultWin.push(payload)
+            }
+        }
+
+        if (item.reward == 'last3f') {
+            let userNum1 = item.userNumber[0]
+            let userNum2 = item.userNumber[1]
+            let userNum3 = item.userNumber[2]
+
+            let combine = userNum1.toString() + userNum2.toString() + userNum3.toString()
+
+
+            if (combine == item.value) {
+
+                item.text = 'ถูกรางวัลเลขหน้า 3 ตัว'
+
+                let payload = {
+                    ...item,
+                    text: 'ถูกรางวัลเลขหน้า 3 ตัว'
+                }
+
+                console.log('ถูกรางวัลหน้า 3 ตัว', item.userNumber)
+                combineResultWin.push(payload)
+            }
+
+        }
+
+        if (item.reward == 'last3b') {
+            let userNum1 = item.userNumber[3]
+            let userNum2 = item.userNumber[4]
+            let userNum3 = item.userNumber[5]
+
+            let combine = userNum1.toString() + userNum2.toString() + userNum3.toString()
+
+
+            if (combine == item.value) {
+
+                item.text = 'ถูกรางวัลเลขท้าย 3 ตัว'
+
+                let payload = {
+                    ...item,
+                    text: 'ถูกรางวัลเลขท้าย 3 ตัว'
+                }
+
+                console.log('ถูกรางวัลหลัง 3 ตัว', item.userNumber)
+                combineResultWin.push(payload)
+            }
+
+        }
+
+        if (item.reward == 'near1') {
+            if (item.userNumber == item.value) {
+
+                item.text = 'ถูกรางวัลใกล้เคียงรางวัลที่ 1'
+
+                let payload = {
+                    ...item,
+                    text: 'ถูกรางวัลใกล้เคียงรางวัลที่ 1'
+                }
+
+                console.log('ถูกรางวัลใกล้เคียง', item.userNumber)
+                combineResultWin.push(payload)
+            }
+        }
+
+
+    })
+
+    if(combineResultWin.length > 0){
+        combineResultWin.map((item, index)=>{
+
+            let payload = {
+                ...item,
+                transaction: false
+            }
+    
+            addDoc(collection(db, 'users_win'), payload).then(() => {
+                // console.log(`${item.name} ${item.userNumber} saved to users_win`)
+            })
+    
+            if(index == (combineResultWin.length - 1)){
+                res.send({status: 200})
+            }
+        })
+    }else{
+        res.send({status: 200})
     }
-
-
 })
 
 
