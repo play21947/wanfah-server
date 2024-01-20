@@ -300,12 +300,188 @@ app.post("/api/points_to_money", async (req, res) => {
 
 })
 
+
+// const LastCheck = async (find) => {
+
+//     return new Promise((resolve, reject)=>{
+
+//         let saveLotterry = []
+
+//         find.map((item, index) => {
+
+//             // console.log(item)
+
+//             if (item.reward == "first") {
+//                 if (item.userNumber == item.value) {
+
+//                     item.text = 'ถูกรางวัลที่ 1'
+
+//                     let payload = {
+//                         ...item,
+//                         text: 'ถูกรางวัลที่ 1'
+//                     }
+//                     console.log('ถูกรางวัลที่ 1', item.userNumber)
+//                     // setResultReward((prev) => [...prev, payload])
+//                     saveLotterry.push(payload)
+//                 }
+//             }else if (item.reward == "second") {
+//                 if (item.userNumber == item.value) {
+
+//                     item.text = 'ถูกรางวัลที่ 2'
+
+//                     let payload = {
+//                         ...item,
+//                         text: 'ถูกรางวัลที่ 2'
+//                     }
+//                     console.log('ถูกรางวัลที่ 2', item.userNumber)
+//                     saveLotterry.push(payload)
+//                     // setResultReward((prev) => [...prev, payload])
+//                 }
+//             }else if (item.reward == 'third') {
+//                 if (item.userNumber == item.value) {
+
+//                     item.text = 'ถูกรางวัลที่ 3'
+
+//                     let payload = {
+//                         ...item,
+//                         text: 'ถูกรางวัลที่ 3'
+//                     }
+//                     console.log('ถูกรางวัลที่ 3', item.userNumber)
+//                     saveLotterry.push(payload)
+//                     // setResultReward((prev) => [...prev, payload])
+//                 }
+//             }else if (item.reward == 'fourth') {
+//                 if (item.userNumber == item.value) {
+
+//                     item.text = 'ถูกรางวัลที่ 4'
+
+//                     let payload = {
+//                         ...item,
+//                         text: 'ถูกรางวัลที่ 4'
+//                     }
+//                     console.log('ถูกรางวัลที่ 4', item.userNumber)
+//                     saveLotterry.push(payload)
+//                     // setResultReward((prev) => [...prev, payload])
+//                 }
+//             }else if (item.reward == 'fifth') {
+//                 if (item.userNumber == item.value) {
+
+//                     item.text = 'ถูกรางวัลที่ 5'
+
+//                     let payload = {
+//                         ...item,
+//                         text: 'ถูกรางวัลที่ 5'
+//                     }
+//                     console.log('ถูกรางวัลที่ 5', item.userNumber)
+//                     saveLotterry.push(payload)
+//                     // setResultReward((prev) => [...prev, payload])
+//                 }
+//             }else if (item.reward == 'last2') {
+
+//                 console.log('last2Join')
+
+//                 let userNum1 = item.userNumber[4]
+//                 let userNum2 = item.userNumber[5]
+//                 let valueNum1 = item.value[0]
+//                 let valueNum2 = item.value[1]
+
+//                 let combine = userNum1.toString() + userNum2.toString()
+
+//                 console.log(combine == item.value)
+
+//                 if (combine == item.value) {
+
+//                     item.text = 'ถูกรางวัล 2 ตัวท้าย'
+
+//                     let payload = {
+//                         ...item,
+//                         text: 'ถูกรางวัล 2 ตัวท้าย'
+//                     }
+
+//                     console.log('ถูกรางวัล 2 ตัวท้าย', item.userNumber)
+//                     saveLotterry.push(payload)
+//                     // setResultReward((prev) => [...prev, payload])
+//                 }
+//             }else if (item.reward == 'last3f') {
+//                 let userNum1 = item.userNumber[0]
+//                 let userNum2 = item.userNumber[1]
+//                 let userNum3 = item.userNumber[2]
+
+//                 let combine = userNum1.toString() + userNum2.toString() + userNum3.toString()
+
+
+//                 if (combine == item.value) {
+
+//                     item.text = 'ถูกรางวัลเลขหน้า 3 ตัว'
+
+//                     let payload = {
+//                         ...item,
+//                         text: 'ถูกรางวัลเลขหน้า 3 ตัว'
+//                     }
+
+//                     console.log('ถูกรางวัลหน้า 3 ตัว', item.userNumber)
+//                     saveLotterry.push(payload)
+//                     // setResultReward((prev) => [...prev, payload])
+//                 }
+
+//             }else if (item.reward == 'last3b') {
+//                 let userNum1 = item.userNumber[3]
+//                 let userNum2 = item.userNumber[4]
+//                 let userNum3 = item.userNumber[5]
+
+//                 let combine = userNum1.toString() + userNum2.toString() + userNum3.toString()
+
+
+//                 if (combine == item.value) {
+
+//                     item.text = 'ถูกรางวัลเลขท้าย 3 ตัว'
+
+//                     let payload = {
+//                         ...item,
+//                         text: 'ถูกรางวัลเลขท้าย 3 ตัว'
+//                     }
+
+//                     console.log('ถูกรางวัลหลัง 3 ตัว', item.userNumber)
+//                     saveLotterry.push(payload)
+//                     // setResultReward((prev) => [...prev, payload])
+//                 }
+
+//             }else if (item.reward == 'near1') {
+//                 if (item.userNumber == item.value) {
+
+//                     item.text = 'ถูกรางวัลใกล้เคียงรางวัลที่ 1'
+
+//                     let payload = {
+//                         ...item,
+//                         text: 'ถูกรางวัลใกล้เคียงรางวัลที่ 1'
+//                     }
+
+//                     console.log('ถูกรางวัลใกล้เคียง', item.userNumber)
+//                     saveLotterry.push(payload)
+//                     // setResultReward((prev) => [...prev, payload])
+//                 }
+//             }else{
+//                 saveLotterry.push(item)
+//             }
+
+//             // if(index == (find.length - 1)){
+//             //     resolve(saveLotterry)
+//             // }
+
+//         })
+
+//         console.log("Save : ", saveLotterry)
+//     })
+
+// }
+
+
 app.get("/api/store_history", async (req, res) => {
 
     let sortLotteryReward = []
     let arrayUserLottery = []
 
-    let combineResultWin = []
+    let saveLotterry = []
 
 
     let lottery_result = await axios.post('https://www.glo.or.th/api/lottery/getLatestLottery').then((res) => {
@@ -364,168 +540,270 @@ app.get("/api/store_history", async (req, res) => {
 
     // console.log("Find Something : ", find)
 
+    find.map((item, index) => {
 
+        // console.log(item)
 
-    find.map((item) => {
+        if (item.reward) {
+            if (item.reward == "first") {
+                console.log("Check first")
+                if (item.userNumber == item.value) {
 
-        if (item.reward == "first") {
-            if (item.userNumber == item.value) {
+                    item.text = 'ถูกรางวัลที่ 1'
 
-                item.text = 'ถูกรางวัลที่ 1'
+                    let payload = {
+                        ...item,
+                        text: 'ถูกรางวัลที่ 1'
+                    }
+                    console.log('ถูกรางวัลที่ 1', item.userNumber)
+                    // setResultReward((prev) => [...prev, payload])
+                    saveLotterry.push(payload)
+                } else {
+                    let payload = {
+                        userId: item.userId,
+                        name: item.name,
+                        date: item.date,
+                        quantity: item.quantity,
+                        userNumber: item.userNumber
+                    }
 
-                let payload = {
-                    ...item,
-                    text: 'ถูกรางวัลที่ 1'
+                    saveLotterry.push(payload)
                 }
-                console.log('ถูกรางวัลที่ 1', item.userNumber)
-                // setResultReward((prev) => [...prev, payload])
-            }
-        }
+            } else if (item.reward == "second") {
+                console.log("Check second")
+                if (item.userNumber == item.value) {
 
-        if (item.reward == "second") {
-            if (item.userNumber == item.value) {
+                    item.text = 'ถูกรางวัลที่ 2'
 
-                item.text = 'ถูกรางวัลที่ 2'
+                    let payload = {
+                        ...item,
+                        text: 'ถูกรางวัลที่ 2'
+                    }
+                    console.log('ถูกรางวัลที่ 2', item.userNumber)
+                    saveLotterry.push(payload)
+                    // setResultReward((prev) => [...prev, payload])
+                } else {
+                    let payload = {
+                        userId: item.userId,
+                        name: item.name,
+                        date: item.date,
+                        quantity: item.quantity,
+                        userNumber: item.userNumber
+                    }
 
-                let payload = {
-                    ...item,
-                    text: 'ถูกรางวัลที่ 2'
+                    saveLotterry.push(payload)
                 }
-                console.log('ถูกรางวัลที่ 2', item.userNumber)
-                // setResultReward((prev) => [...prev, payload])
-            }
-        }
+            } else if (item.reward == 'third') {
+                if (item.userNumber == item.value) {
 
-        if (item.reward == 'third') {
-            if (item.userNumber == item.value) {
+                    item.text = 'ถูกรางวัลที่ 3'
 
-                item.text = 'ถูกรางวัลที่ 3'
+                    let payload = {
+                        ...item,
+                        text: 'ถูกรางวัลที่ 3'
+                    }
+                    console.log('ถูกรางวัลที่ 3', item.userNumber)
+                    saveLotterry.push(payload)
+                    // setResultReward((prev) => [...prev, payload])
+                } else {
+                    let payload = {
+                        userId: item.userId,
+                        name: item.name,
+                        date: item.date,
+                        quantity: item.quantity,
+                        userNumber: item.userNumber
+                    }
 
-                let payload = {
-                    ...item,
-                    text: 'ถูกรางวัลที่ 3'
+                    saveLotterry.push(payload)
                 }
-                console.log('ถูกรางวัลที่ 3', item.userNumber)
-                // setResultReward((prev) => [...prev, payload])
-            }
-        }
+            } else if (item.reward == 'fourth') {
+                if (item.userNumber == item.value) {
 
-        if (item.reward == 'fourth') {
-            if (item.userNumber == item.value) {
+                    item.text = 'ถูกรางวัลที่ 4'
 
-                item.text = 'ถูกรางวัลที่ 4'
+                    let payload = {
+                        ...item,
+                        text: 'ถูกรางวัลที่ 4'
+                    }
+                    console.log('ถูกรางวัลที่ 4', item.userNumber)
+                    saveLotterry.push(payload)
+                    // setResultReward((prev) => [...prev, payload])
+                } else {
+                    let payload = {
+                        userId: item.userId,
+                        name: item.name,
+                        date: item.date,
+                        quantity: item.quantity,
+                        userNumber: item.userNumber
+                    }
 
-                let payload = {
-                    ...item,
-                    text: 'ถูกรางวัลที่ 4'
+                    saveLotterry.push(payload)
                 }
-                console.log('ถูกรางวัลที่ 4', item.userNumber)
-                // setResultReward((prev) => [...prev, payload])
-            }
-        }
+            } else if (item.reward == 'fifth') {
+                if (item.userNumber == item.value) {
 
-        if (item.reward == 'fifth') {
-            if (item.userNumber == item.value) {
+                    item.text = 'ถูกรางวัลที่ 5'
 
-                item.text = 'ถูกรางวัลที่ 5'
+                    let payload = {
+                        ...item,
+                        text: 'ถูกรางวัลที่ 5'
+                    }
+                    console.log('ถูกรางวัลที่ 5', item.userNumber)
+                    saveLotterry.push(payload)
+                    // setResultReward((prev) => [...prev, payload])
+                } else {
+                    let payload = {
+                        userId: item.userId,
+                        name: item.name,
+                        date: item.date,
+                        quantity: item.quantity,
+                        userNumber: item.userNumber
+                    }
 
-                let payload = {
-                    ...item,
-                    text: 'ถูกรางวัลที่ 5'
+                    saveLotterry.push(payload)
                 }
-                console.log('ถูกรางวัลที่ 5', item.userNumber)
-                // setResultReward((prev) => [...prev, payload])
-            }
-        }
+            } else if (item.reward == 'last2') {
 
-        if (item.reward == 'last2') {
+                console.log('last2Join')
 
-            let userNum1 = item.userNumber[4]
-            let userNum2 = item.userNumber[5]
-            let valueNum1 = item.value[0]
-            let valueNum2 = item.value[1]
+                let userNum1 = item.userNumber[4]
+                let userNum2 = item.userNumber[5]
+                let valueNum1 = item.value[0]
+                let valueNum2 = item.value[1]
 
-            let combine = userNum1.toString() + userNum2.toString()
+                let combine = userNum1.toString() + userNum2.toString()
 
-            if (combine == item.value) {
+                console.log(combine == item.value)
 
-                item.text = 'ถูกรางวัล 2 ตัวท้าย'
+                if (combine == item.value) {
 
-                let payload = {
-                    ...item,
-                    text: 'ถูกรางวัล 2 ตัวท้าย'
+                    item.text = 'ถูกรางวัล 2 ตัวท้าย'
+
+                    let payload = {
+                        ...item,
+                        text: 'ถูกรางวัล 2 ตัวท้าย'
+                    }
+
+                    console.log('ถูกรางวัล 2 ตัวท้าย', item.userNumber)
+                    saveLotterry.push(payload)
+                    // setResultReward((prev) => [...prev, payload])
+                } else {
+                    let payload = {
+                        userId: item.userId,
+                        name: item.name,
+                        date: item.date,
+                        quantity: item.quantity,
+                        userNumber: item.userNumber
+                    }
+
+                    saveLotterry.push(payload)
                 }
+            } else if (item.reward == 'last3f') {
+                let userNum1 = item.userNumber[0]
+                let userNum2 = item.userNumber[1]
+                let userNum3 = item.userNumber[2]
 
-                console.log('ถูกรางวัล 2 ตัวท้าย', item.userNumber)
-                // setResultReward((prev) => [...prev, payload])
-            }
-        }
-
-        if (item.reward == 'last3f') {
-            let userNum1 = item.userNumber[0]
-            let userNum2 = item.userNumber[1]
-            let userNum3 = item.userNumber[2]
-
-            let combine = userNum1.toString() + userNum2.toString() + userNum3.toString()
+                let combine = userNum1.toString() + userNum2.toString() + userNum3.toString()
 
 
-            if (combine == item.value) {
+                if (combine == item.value) {
 
-                item.text = 'ถูกรางวัลเลขหน้า 3 ตัว'
+                    item.text = 'ถูกรางวัลเลขหน้า 3 ตัว'
 
-                let payload = {
-                    ...item,
-                    text: 'ถูกรางวัลเลขหน้า 3 ตัว'
-                }
+                    let payload = {
+                        ...item,
+                        text: 'ถูกรางวัลเลขหน้า 3 ตัว'
+                    }
 
-                console.log('ถูกรางวัลหน้า 3 ตัว', item.userNumber)
-                // setResultReward((prev) => [...prev, payload])
-            }
+                    console.log('ถูกรางวัลหน้า 3 ตัว', item.userNumber)
+                    saveLotterry.push(payload)
+                    // setResultReward((prev) => [...prev, payload])
+                } else {
+                    let payload = {
+                        userId: item.userId,
+                        name: item.name,
+                        date: item.date,
+                        quantity: item.quantity,
+                        userNumber: item.userNumber
+                    }
 
-        }
-
-        if (item.reward == 'last3b') {
-            let userNum1 = item.userNumber[3]
-            let userNum2 = item.userNumber[4]
-            let userNum3 = item.userNumber[5]
-
-            let combine = userNum1.toString() + userNum2.toString() + userNum3.toString()
-
-
-            if (combine == item.value) {
-
-                item.text = 'ถูกรางวัลเลขท้าย 3 ตัว'
-
-                let payload = {
-                    ...item,
-                    text: 'ถูกรางวัลเลขท้าย 3 ตัว'
-                }
-
-                console.log('ถูกรางวัลหลัง 3 ตัว', item.userNumber)
-                // setResultReward((prev) => [...prev, payload])
-            }
-
-        }
-
-        if (item.reward == 'near1') {
-            if (item.userNumber == item.value) {
-
-                item.text = 'ถูกรางวัลใกล้เคียงรางวัลที่ 1'
-
-                let payload = {
-                    ...item,
-                    text: 'ถูกรางวัลใกล้เคียงรางวัลที่ 1'
+                    saveLotterry.push(payload)
                 }
 
-                console.log('ถูกรางวัลใกล้เคียง', item.userNumber)
-                // setResultReward((prev) => [...prev, payload])
-            }
-        }
+            } else if (item.reward == 'last3b') {
+                let userNum1 = item.userNumber[3]
+                let userNum2 = item.userNumber[4]
+                let userNum3 = item.userNumber[5]
 
+                let combine = userNum1.toString() + userNum2.toString() + userNum3.toString()
+
+
+                if (combine == item.value) {
+
+                    item.text = 'ถูกรางวัลเลขท้าย 3 ตัว'
+
+                    let payload = {
+                        ...item,
+                        text: 'ถูกรางวัลเลขท้าย 3 ตัว'
+                    }
+
+                    console.log('ถูกรางวัลหลัง 3 ตัว', item.userNumber)
+                    saveLotterry.push(payload)
+                    // setResultReward((prev) => [...prev, payload])
+                } else {
+                    let payload = {
+                        userId: item.userId,
+                        name: item.name,
+                        date: item.date,
+                        quantity: item.quantity,
+                        userNumber: item.userNumber
+                    }
+
+                    saveLotterry.push(payload)
+                }
+
+            } else if (item.reward == 'near1') {
+                if (item.userNumber == item.value) {
+
+                    item.text = 'ถูกรางวัลใกล้เคียงรางวัลที่ 1'
+
+                    let payload = {
+                        ...item,
+                        text: 'ถูกรางวัลใกล้เคียงรางวัลที่ 1'
+                    }
+
+                    console.log('ถูกรางวัลใกล้เคียง', item.userNumber)
+                    saveLotterry.push(payload)
+                    // setResultReward((prev) => [...prev, payload])
+                } else {
+                    let payload = {
+                        userId: item.userId,
+                        name: item.name,
+                        date: item.date,
+                        quantity: item.quantity,
+                        userNumber: item.userNumber
+                    }
+
+                    saveLotterry.push(payload)
+                }
+            }
+        } else {
+            let payload = {
+                userId: item.userId,
+                name: item.name,
+                date: item.date,
+                quantity: item.quantity,
+                userNumber: item.userNumber
+            }
+
+            saveLotterry.push(payload)
+        }
 
     })
 
-    find.map((item, index) => {
+    console.log(saveLotterry)
+
+    saveLotterry.map((item, index) => {
 
         addDoc(collection(db, 'history'), item).then((res) => {
             console.log(`${item.name} ${item.userNumber} saved to history`)
@@ -764,24 +1042,24 @@ app.get("/api/check_users_win", async (req, res) => {
 
     })
 
-    if(combineResultWin.length > 0){
-        combineResultWin.map((item, index)=>{
+    if (combineResultWin.length > 0) {
+        combineResultWin.map((item, index) => {
 
             let payload = {
                 ...item,
                 transaction: false
             }
-    
+
             addDoc(collection(db, 'users_win'), payload).then(() => {
                 // console.log(`${item.name} ${item.userNumber} saved to users_win`)
             })
-    
-            if(index == (combineResultWin.length - 1)){
-                res.send({status: 200})
+
+            if (index == (combineResultWin.length - 1)) {
+                res.send({ status: 200 })
             }
         })
-    }else{
-        res.send({status: 200})
+    } else {
+        res.send({ status: 200 })
     }
 })
 
