@@ -134,6 +134,10 @@ CheckMemoryUsage()
 
 // GroupId : C50d6008e31f79c1b01d67ec9d7152b14
 
+// GroupId 2 : Ccc96d4c32eb77faffe9ae8b0051ea13b
+
+let groupId = 'Ccc96d4c32eb77faffe9ae8b0051ea13b'
+
 
 app.get("/test", (req, res) => {
     console.log("test")
@@ -179,7 +183,7 @@ app.post("/notify", async (req, res) => {
     console.log(combine_array_lottery)
     // console.log(chalk.red("IMG SLIP DATA : ", slip_img))
     await axios.post("https://api.line.me/v2/bot/message/push", {
-        to: 'C50d6008e31f79c1b01d67ec9d7152b14',
+        to: groupId,
         messages: [
             {
                 type: 'text',
@@ -252,7 +256,7 @@ app.post('/api/winLottery', async (req, res) => {
 
 
     await axios.post("https://api.line.me/v2/bot/message/push", {
-        to: 'C50d6008e31f79c1b01d67ec9d7152b14',
+        to: groupId,
         messages: [
             {
                 type: 'text',
@@ -280,7 +284,7 @@ app.post("/api/points_to_money", async (req, res) => {
     let { userProfile, amount } = req.body
 
     let response = await axios.post("https://api.line.me/v2/bot/message/push", {
-        to: 'C50d6008e31f79c1b01d67ec9d7152b14',
+        to: groupId,
         messages: [
             {
                 type: 'text',
