@@ -182,26 +182,45 @@ app.post("/notify", async (req, res) => {
 
     console.log(combine_array_lottery)
     // console.log(chalk.red("IMG SLIP DATA : ", slip_img))
-    await axios.post("https://api.line.me/v2/bot/message/push", {
-        to: groupId,
-        messages: [
-            {
-                type: 'text',
-                text: `คุณ ${name} ${lastName} \nเบอร์โทร : ${numberPhone} \n ช่องทาง : ${way == 'ems' ? 'ส่ง EMS +50 บาท' : 'ปกติ'} \nยอด : ${way == 'ems' ? (total + (totalQuantity * maintenance)) + 50 : (total + (totalQuantity * maintenance))} บาท \nหวยที่ซื้อ : ${CartTextShow} \nจำนวน : ${totalQuantity} ใบ`
-            },
-            {
-                type: 'image',
-                originalContentUrl: slip_img,
-                previewImageUrl: slip_img
+
+    if (way == 'tu') {
+        await axios.post("https://api.line.me/v2/bot/message/push", {
+            to: groupId,
+            messages: [
+                {
+                    type: 'text',
+                    text: `คุณ ${name} ${lastName} \nเบอร์โทร : ${numberPhone} \n ช่องทาง : ${way == 'tu' ? 'ซื้อผ่านตู้' : 'ปกติ'} \nยอด : ${way == 'ems' ? (total + (totalQuantity * maintenance)) + 50 : (total + (totalQuantity * maintenance))} บาท \nหวยที่ซื้อ : ${CartTextShow} \nจำนวน : ${totalQuantity} ใบ`
+                },
+            ]
+        }, {
+            headers: {
+                'Authorization': `Bearer ${env.ACCESS_TOKEN}`
             }
-        ]
-    }, {
-        headers: {
-            'Authorization': `Bearer ${env.ACCESS_TOKEN}`
-        }
-    }).then((res) => {
-        console.log(res)
-    })
+        }).then((res) => {
+            console.log(res)
+        })
+    } else {
+        await axios.post("https://api.line.me/v2/bot/message/push", {
+            to: groupId,
+            messages: [
+                {
+                    type: 'text',
+                    text: `คุณ ${name} ${lastName} \nเบอร์โทร : ${numberPhone} \n ช่องทาง : ${way == 'ems' ? 'ส่ง EMS +50 บาท' : 'ปกติ'} \nยอด : ${way == 'ems' ? (total + (totalQuantity * maintenance)) + 50 : (total + (totalQuantity * maintenance))} บาท \nหวยที่ซื้อ : ${CartTextShow} \nจำนวน : ${totalQuantity} ใบ`
+                },
+                {
+                    type: 'image',
+                    originalContentUrl: slip_img,
+                    previewImageUrl: slip_img
+                }
+            ]
+        }, {
+            headers: {
+                'Authorization': `Bearer ${env.ACCESS_TOKEN}`
+            }
+        }).then((res) => {
+            console.log(res)
+        })
+    }
 })
 
 app.get("/unlockLotteryAll", async (req, res) => {
