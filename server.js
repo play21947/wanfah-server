@@ -168,7 +168,7 @@ app.post("/notify", async (req, res) => {
         }, 0)
     }
 
-    console.log("Notify Start")
+    // console.log("Notify Start")
 
     await cartJson.map((item, index) => {
         if (index == 0) {
@@ -180,45 +180,32 @@ app.post("/notify", async (req, res) => {
 
     let CartTextShow = combine_array_lottery.replace(' ', ',')
 
-    console.log(combine_array_lottery)
+    // console.log(combine_array_lottery)
     // console.log(chalk.red("IMG SLIP DATA : ", slip_img))
 
     if (way == 'tu') {
-        await axios.post("https://api.line.me/v2/bot/message/push", {
-            to: groupId,
-            messages: [
-                {
-                    type: 'text',
-                    text: `คุณ ${name} ${lastName} \nเบอร์โทร : ${numberPhone} \n ช่องทาง : ${way == 'tu' ? 'ซื้อผ่านตู้' : 'ปกติ'} \nยอด : ${way == 'ems' ? (total + (totalQuantity * maintenance)) + 50 : (total + (totalQuantity * maintenance))} บาท \nหวยที่ซื้อ : ${CartTextShow} \nจำนวน : ${totalQuantity} ใบ`
-                },
-            ]
+        await axios.post("https://notify-api.line.me/api/notify", {
+            message: `คุณ ${name} ${lastName} \nเบอร์โทร : ${numberPhone} \n ช่องทาง : ${way == 'tu' ? 'ซื้อผ่านตู้' : 'ปกติ'} \nยอด : ${way == 'ems' ? (total + (totalQuantity * maintenance)) + 50 : (total + (totalQuantity * maintenance))} บาท \nหวยที่ซื้อ : ${CartTextShow} \nจำนวน : ${totalQuantity} ใบ`
         }, {
             headers: {
-                'Authorization': `Bearer ${env.ACCESS_TOKEN}`
+                "Content-Type": "application/x-www-form-urlencoded",
+                'Authorization': `Bearer ${env.LINE_NOTIFY_TOKEN}`
             }
         }).then((res) => {
-            console.log(res)
+            // console.log(res)
         })
     } else {
-        await axios.post("https://api.line.me/v2/bot/message/push", {
-            to: groupId,
-            messages: [
-                {
-                    type: 'text',
-                    text: `คุณ ${name} ${lastName} \nเบอร์โทร : ${numberPhone} \n ช่องทาง : ${way == 'ems' ? 'ส่ง EMS +50 บาท' : 'ปกติ'} \nยอด : ${way == 'ems' ? (total + (totalQuantity * maintenance)) + 50 : (total + (totalQuantity * maintenance))} บาท \nหวยที่ซื้อ : ${CartTextShow} \nจำนวน : ${totalQuantity} ใบ`
-                },
-                {
-                    type: 'image',
-                    originalContentUrl: slip_img,
-                    previewImageUrl: slip_img
-                }
-            ]
+        await axios.post("https://notify-api.line.me/api/notify", {
+            message: `\n\n🎉-------------------🎉\nคุณ ${name} ${lastName} \nเบอร์โทร : ${numberPhone} \nช่องทาง : ${way == 'ems' ? 'ส่ง EMS +50 บาท' : 'ปกติ'} \nยอด : ${way == 'ems' ? (total + (totalQuantity * maintenance)) + 50 : (total + (totalQuantity * maintenance))} บาท \nหวยที่ซื้อ : ${CartTextShow} \nจำนวน : ${totalQuantity} ใบ\n-------------------------`,
+            imageFullsize: slip_img,
+            imageThumbnail: slip_img
         }, {
             headers: {
-                'Authorization': `Bearer ${env.ACCESS_TOKEN}`
+                "Content-Type": "application/x-www-form-urlencoded",
+                'Authorization': `Bearer ${env.LINE_NOTIFY_TOKEN}`
             }
         }).then((res) => {
-            console.log(res)
+            // console.log(res)
         })
     }
 })
@@ -335,6 +322,7 @@ app.get("/api/store_history", async (req, res) => {
     let lottery_result = await axios.post('https://www.glo.or.th/api/lottery/getLatestLottery').then((res) => {
         return res.data
     })
+
 
 
     let reward = Object.entries(lottery_result.response.data)
@@ -676,6 +664,10 @@ app.get("/api/check_users_win", async (req, res) => {
         return res.data
     })
 
+    console.log("Lottery : ", lottery_result)
+
+    // console.log("Check : ", lottery_result)
+
 
     let reward = Object.entries(lottery_result.response.data)
     let data = Object.entries(lottery_result.response.data)
@@ -899,7 +891,7 @@ app.get("/api/check_users_win", async (req, res) => {
             }
 
             addDoc(collection(db, 'users_win'), payload).then(() => {
-                // console.log(`${item.name} ${item.userNumber} saved to users_win`)
+                console.log(`${item.name} ${item.userNumber} saved to users_win`)
             })
 
             if (index == (combineResultWin.length - 1)) {
