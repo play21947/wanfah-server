@@ -157,7 +157,7 @@ app.post("/webhook", (req, res) => {
 
 app.post("/notify", async (req, res) => {
     let maintenance = 20
-    let { name, lastName, numberPhone, total, slip_img, cart, way } = req.body
+    let { name, lastName, numberPhone, total, slip_img, cart, way, discount } = req.body
     let cartJson = JSON.parse(cart)
     let combine_array_lottery = ''
     let totalQuantity = 0
@@ -185,7 +185,7 @@ app.post("/notify", async (req, res) => {
 
     if (way == 'tu') {
         await axios.post("https://notify-api.line.me/api/notify", {
-            message: `คุณ ${name} ${lastName} \nเบอร์โทร : ${numberPhone} \n ช่องทาง : ${way == 'tu' ? 'ซื้อผ่านตู้' : 'ปกติ'} \nยอด : ${way == 'ems' ? (total + (totalQuantity * maintenance)) + 50 : (total + (totalQuantity * maintenance))} บาท \nหวยที่ซื้อ : ${CartTextShow} \nจำนวน : ${totalQuantity} ใบ`
+            message: `คุณ ${name} ${lastName} \nเบอร์โทร : ${numberPhone} \nช่องทาง : ${way == 'tu' ? 'ซื้อผ่านตู้' : 'ปกติ'} \n${discount && discount.length > 0 ? 'ใช้โค้ดส่วนลด : ' + discount[0].code : ''}\nยอด : ${way == 'ems' ? (total + (totalQuantity * maintenance)) + 50 : discount && discount.length > 0 ? (total + (totalQuantity * maintenance)) - discount[0].reduce : (total + (totalQuantity * maintenance))} บาท \nหวยที่ซื้อ : ${CartTextShow} \nจำนวน : ${totalQuantity} ใบ`
         }, {
             headers: {
                 "Content-Type": "application/x-www-form-urlencoded",
@@ -196,7 +196,7 @@ app.post("/notify", async (req, res) => {
         })
     } else {
         await axios.post("https://notify-api.line.me/api/notify", {
-            message: `\n\n🎉-------------------🎉\nคุณ ${name} ${lastName} \nเบอร์โทร : ${numberPhone} \nช่องทาง : ${way == 'ems' ? 'ส่ง EMS +50 บาท' : 'ปกติ'} \nยอด : ${way == 'ems' ? (total + (totalQuantity * maintenance)) + 50 : (total + (totalQuantity * maintenance))} บาท \nหวยที่ซื้อ : ${CartTextShow} \nจำนวน : ${totalQuantity} ใบ\n-------------------------`,
+            message: `\n\n🎉-------------------🎉\nคุณ ${name} ${lastName} \nเบอร์โทร : ${numberPhone} \nช่องทาง : ${way == 'ems' ? 'ส่ง EMS +50 บาท' : 'ปกติ'} \n${discount && discount.length > 0 ? 'ใช้โค้ดส่วนลด : ' + discount[0].code : ''}\nยอด : ${way == 'ems' ? (total + (totalQuantity * maintenance)) + 50 : discount && discount.length > 0 ? (total + (totalQuantity * maintenance)) - discount[0].reduce : (total + (totalQuantity * maintenance))} บาท \nหวยที่ซื้อ : ${CartTextShow} \nจำนวน : ${totalQuantity} ใบ\n-------------------------`,
             imageFullsize: slip_img,
             imageThumbnail: slip_img
         }, {
